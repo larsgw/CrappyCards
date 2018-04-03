@@ -6,8 +6,8 @@ exports.onInstall = ->
   Db.shared.set 'packs', [2]
 
 exports.onUpgrade = ->
-#   do Cah.wakeCzar
-#   do Cah.initGame
+#   do Game.wakeCzar
+#   do Game.initGame
 
 exports.client_setPlayers = (ids) ->
   Db.shared.set 'players', ids
@@ -16,21 +16,21 @@ exports.client_setPacks = (ids) ->
   Db.shared.set 'packs', ids
 
 exports.client_startGame = ->
-  do Cah.initGame
+  do Game.initGame
   Db.shared.set 'state', APP_STATE.GAME
 
 exports.client_resetGame = ->
-  do Cah.initGame
+  do Game.initGame
   Db.shared.set 'state', APP_STATE.CREATE
 
 exports.client_nextRound = ->
   log 'next round'
-  do Cah.initRound
+  do Game.initRound
 
 exports.client_skip = ->
   log 'skip'
   if Db.shared.peek('phase') is ROUND_PHASE.PLAYER
-    do Cah.wakeCzar
+    do Game.wakeCzar
   else
     do exports.client_nextRound
 
@@ -63,7 +63,7 @@ exports.client_playCards = (player) ->
   
   if Util.values(Db.shared.peek 'player').every(({state}) ->
     state is PLAYER_STATE.IDLE)
-    do Cah.wakeCzar
+    do Game.wakeCzar
 
 # Czar
 
@@ -76,7 +76,7 @@ exports.client_pickCzar = (player) ->
 #   Db.shared.remove 'player', czar, 'selection'
 
 exports.client_playCzar = () ->
-  do Cah.endRound
+  do Game.endRound
 
 # Debug
 

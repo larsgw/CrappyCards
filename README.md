@@ -1,33 +1,37 @@
-Example
-=======
-Example group app for Happening. Contains API demos.
+# ![Crappy Cards logo](https://cdn.rawgit.com/larsgw/CrappyCards/master/icon.svg) Crappy Cards
 
-Happening enables developers to create group apps that can instantly be used by anyone. It offers a group-centric, cross-platform API and allows many types of group-interaction to be modeled in less than a thousand lines of code.
+A [Happening](https://happening.im) plugin based on [Cards Against Humanity](https://cardsagainsthumanity.com/) (see [LICENSE](https://github.com/larsgw/CrappyCards/blob/master/LICENSE.md)).
 
-Read more at https://developer.happening.im/.
+> I don't agree with all the content in Cards Against Humanity. Because of that, I'm currently working on labeling the cards, to give the user the option to filter out certain topics. This option will be on by default.
 
-Getting started
----------------
-On Linux/Mac, use your Bash-compatible shell. On Windows, we recommend the Git shell that comes with [Git](http://git-scm.com/download/win).
+## Install
 
-1. Clone the example code: `git clone https://github.com/happening/Example.git`.
-2. Create a **Developer console app** via https://happening.im/store/106 and clicking "Start!".
-3. Deploy your app using `cd Example/; ./deploy {deployKey}`. It should instantly update in your browser / app.
-4. Optionally, copy the __deploy key__ to a file (`echo 1234abcdef > .deploykey`) and use `./deploy` without arguments.
+There is currently no production developer console instance for Crappy Cards. For now, you can deploy it yourself by following these steps (adapted from the [Happening example code](https://github.com/Happening/Example)).
 
-Alternatively, you can use the online editor at https://developer.happening.im.
+> On Linux/Mac, use your Bash-compatible shell. On Windows, we recommend the Git shell that comes with [Git](http://git-scm.com/download/win).
 
-Manifest
---------
-`manifest` holds your app configuration.
+> 1. Clone the code: `git clone https://github.com/larsgw/CrappyCards.git`.
+> 2. Create a **Developer console app** via https://happening.im/store/106 and clicking "Start!".
+> 3. Deploy your app using `cd CrappyCards/; ./deploy {deployKey}`. It should instantly update in your browser / app.
+> 4. Optionally, copy the __deploy key__ to a file (`echo 1234abcdef > .deploykey`) and use `./deploy` without arguments.
 
-- __name__ Group app name.
-- __desciption__ Group app description.
-- __api__ API version, use `3`.
-- __icon__ Default icon, [list of available icons](https://happening.im/static/plugicons.html). Alternatively, you can bundle your own `icon.svg`.
+## Contribute
 
-Distribution
-------------
-Happening apps work in instances. A new instance is created when someone wants to use the app with another group of people. That means your (viral) app can spread autonomously throughout Happening. Your **developer console** shows all current instances. You can choose to disable re-sharing the app - useful when the app is very specific (not useful to others) or you are still testing out your app.
+### Bugs & other issues
 
-Another way people on Happening find apps is via the listing under Launch app. If you feel your app should be listed here, [send us a message](mailto:dev@happening.im).
+Report at [GitHub Issues](https://github.com/larsgw/issues).
+
+### Test
+
+Currently, there are no other tests than creating a test environment and running it yourself. On how to deploy the app, see the *Install* guide above.
+
+### Update cards
+
+1. Clone the code: `git clone https://github.com/larsgw/CrappyCards.git`.
+2. Install dev packages: `npm install`
+3. Change the version in `updateCards.js` (at `cardsUrl`). Try to make sure that the card and pack IDs match up.
+4. Run script: `node updateCards.js`
+
+### Classify cards
+
+Help with classifying cards would be very welcome, but is currently not viable.
