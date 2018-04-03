@@ -1,0 +1,18 @@
+# META
+.gitignore
+.deployignore
+.deploykey
+
+# DOCS
+LICENSE
+*.md
+
+# HELPERS
+deploy
+updateCards.js
+
+# DEV
+*.source.coffee
+*_
+icon.html
+*.txt
