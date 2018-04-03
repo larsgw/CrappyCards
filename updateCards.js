@@ -1,6 +1,12 @@
 const fs = require('fs')
 const https = require('https')
 const readline = require('readline')
+const decodeEntities = require('html-entities').Html5Entities.decode
+
+const decode = (html) => {
+  const markdown = html.replace(/<\/?i>/g, '*').replace(/<br>/g, '\n')
+  return decodeEntities(markdown)
+}
 
 const cardsUrl = 'https://cdn.rawgit.com/ajanata/PretendYoureXyzzy/88ab1ac64043de78c368a892b7154ee0c6d84844/cah_cards.sql'
 const tables = {}
@@ -32,12 +38,14 @@ const handleTables = () => {
     results.packs[set.id].cards = {white: [], black: []}
   }
   for (const card of tables.black_cards) {
+    card.text = decode(card.text)
+    card.packs = []
     results.blackCards[card.id] = card
-    results.blackCards[card.id].packs = []
   }
   for (const card of tables.white_cards) {
+    card.text = decode(card.text)
+    card.packs = []
     results.whiteCards[card.id] = card
-    results.whiteCards[card.id].packs = []
   }
   
   for (const {card_set_id: pack, black_card_id: card} of tables.card_set_black_card) {

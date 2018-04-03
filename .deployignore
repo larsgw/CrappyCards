@@ -11,8 +11,12 @@ LICENSE
 # HELPERS
 deploy
 updateCards.js
+package.json
+package-lock.json
+node_modules/
 
 # DEV
+dev/
 *.source.coffee
 *_
 icon.html

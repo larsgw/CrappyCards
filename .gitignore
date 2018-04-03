@@ -2,6 +2,10 @@
 dev/
 .directory
 
+# BUILD
+node_modules/
+packs.common.coffee
+
 # KEY
 .deploykey
 old_key.txt

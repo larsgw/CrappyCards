@@ -1,7 +1,3 @@
-{decode: decodeEntities} = Entities
-
-decode = (text) -> decodeEntities text.replace(/<\/?i>/g, '*').replace(/<br>/g, '\n')
-
 cardCss =
   '*':
     boxSizing: 'border-box'
@@ -157,7 +153,7 @@ r_game = ->
     {packs: [pack], text, draw, pick, watermark} = Packs.cardInfo card
     
     # Text
-    Dom.p -> Dom.userText decode(text), {emoji: false}
+    Dom.p -> Dom.userText text, {emoji: false}
     
     Dom.div ->
       Dom.addClass 'footer'
@@ -323,7 +319,7 @@ r_round = (query) ->
       padding: '30px'
       background: 'black'
       color: 'white'
-    Dom.userText decode(text)
+    Dom.userText text
   
   # Czar
   Dom.h2 'Czar'
@@ -346,7 +342,7 @@ r_round = (query) ->
         content: ->
           selection.iterate (card) ->
             {text} = Packs.cardInfo card.key()
-            Dom.p -> Dom.userText '"' + decode(text) + '"'
+            Dom.p -> Dom.userText '"' + text + '"'
           , (card) -> +card.peek()
         sub: ->
           Dom.span App.userName(player) + ' (winner)'
