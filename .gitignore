@@ -1,0 +1,7 @@
+# DEV
+dev/
+.directory
+
+# KEY
+.deploykey
+old_key.txt

@@ -2,6 +2,7 @@
 .gitignore
 .deployignore
 .deploykey
+.directory
 
 # DOCS
 LICENSE
