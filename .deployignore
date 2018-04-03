@@ -13,11 +13,12 @@ deploy
 updateCards.js
 package.json
 package-lock.json
-node_modules/
+node_modules/*
 
 # DEV
-dev/
+dev/*
 *.source.coffee
 *_
 icon.html
 *.txt
+views.client.coffee
