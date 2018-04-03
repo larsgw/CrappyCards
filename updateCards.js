@@ -2,7 +2,7 @@ const fs = require('fs')
 const https = require('https')
 const readline = require('readline')
 
-const cardsUrl = 'https://cdn.rawgit.com/ajanata/PretendYoureXyzzy/master/cah_cards.sql'
+const cardsUrl = 'https://cdn.rawgit.com/ajanata/PretendYoureXyzzy/88ab1ac64043de78c368a892b7154ee0c6d84844/cah_cards.sql'
 const tables = {}
 const results = {
   packs: {},
