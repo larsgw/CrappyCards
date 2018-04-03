@@ -1,3 +1,5 @@
+{APP_STATE, ROUND_PHASE, PLAYER_STATE} = Enums
+
 cardCss =
   '*':
     boxSizing: 'border-box'
@@ -88,7 +90,7 @@ exports.render = ->
   
   # Routing
   
-  if state is 'create'
+  if state is APP_STATE.CREATE
     if Page.state.get(0) is 'config'
       if not App.userIsAdmin App.userId()
         Ui.emptyText 'Only available for admins'
@@ -104,7 +106,7 @@ exports.render = ->
       else
         Ui.emptyText 'Waiting for admin to start the game'
 
-  else if state is 'game'
+  else if state is APP_STATE.GAME
     if Page.state.get(0) is 'players'
       do r_players
     else if Page.state.get(0) is 'rounds'
@@ -209,7 +211,7 @@ r_game = ->
       renderCard 'white', ->
         userState = Db.shared.get 'player', user, 'state'
         
-        if isPlayer and userState is 1
+        if isPlayer and userState is PLAYER_STATE.BUSY
           if isCzar
             if Db.shared.get('player', user, 'selection')?
               Ui.button 'Confirm', -> Server.call 'playCzar'
@@ -233,7 +235,7 @@ r_game = ->
       phase = Db.shared.get 'phase'
       
       # Card picking phase (players)
-      if phase is 0
+      if phase is ROUND_PHASE.PLAYER
         if isCzar
           Ui.emptyText 'Card Czar'
         else if isPlayer
@@ -249,7 +251,7 @@ r_game = ->
           Ui.emptyText 'Waiting for players to play cards...'
       
       # Card selecting phase (czar)
-      else if phase is 1
+      else if phase is ROUND_PHASE.CZAR
         Db.shared.iterate 'player', (playerData) ->
           player = +playerData.key()
           
@@ -262,7 +264,7 @@ r_game = ->
             cardType = 'white'
             onTap = null
             
-            if isCzar or czarState is 0
+            if isCzar or czarState is PLAYER_STATE.IDLE
               selected = player is Db.shared.get 'player', czar, 'selection'
               cardType = if selected then 'selected' else 'white'
 #               action = if selected then 'unpickCzar' else 'pickCzar'
@@ -394,7 +396,7 @@ r_players = ->
     
     Ui.item
       avatar: App.userAvatar(id)
-      sub: if id is czar then 'Card Czar' else if state then 'Selecting' else undefined
+      sub: if id is czar then 'Card Czar' else if state is PLAYER_STATE.BUSY then 'Selecting' else undefined
       onTap: -> App.userInfo(id)
       
       prefix: ->
@@ -412,7 +414,7 @@ r_players = ->
   Ui.button 'View rounds history', -> Page.nav ['rounds']
 
 exports.renderSettings = ->
-  if Db.shared.get('state') is 'create'
+  if Db.shared.get('state') is APP_STATE.CREATE
     Ui.button 'Set up the game', -> Page.nav ['config']
   else
     Ui.button 'Reset', ->

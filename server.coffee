@@ -1,5 +1,7 @@
+{APP_STATE, ROUND_PHASE, PLAYER_STATE} = Enums.get()
+
 exports.onInstall = ->
-  Db.shared.set 'state', 'create'
+  Db.shared.set 'state', APP_STATE.CREATE
   Db.shared.set 'players', [App.ownerId()]
   Db.shared.set 'packs', [2]
 
@@ -15,11 +17,11 @@ exports.client_setPacks = (ids) ->
 
 exports.client_startGame = ->
   do Cah.initGame
-  Db.shared.set 'state', 'game'
+  Db.shared.set 'state', APP_STATE.GAME
 
 exports.client_resetGame = ->
   do Cah.initGame
-  Db.shared.set 'state', 'create'
+  Db.shared.set 'state', APP_STATE.CREATE
 
 exports.client_nextRound = ->
   log 'next round'
@@ -27,8 +29,7 @@ exports.client_nextRound = ->
 
 exports.client_skip = ->
   log 'skip'
-  czar = Db.shared.peek 'czar'
-  if Db.shared.peek('player', czar, 'state') is 0
+  if Db.shared.peek('phase') is ROUND_PHASE.PLAYER
     do Cah.wakeCzar
   else
     do exports.client_nextRound
@@ -58,9 +59,10 @@ exports.client_unpickCard = (player, card) ->
   Db.shared.remove 'player', player, 'selection', card
 
 exports.client_playCards = (player) ->
-  Db.shared.set 'player', player, 'state', 0
+  Db.shared.set 'player', player, 'state', PLAYER_STATE.IDLE
   
-  if Util.values(Db.shared.peek 'player').every(({state}) -> state is 0)
+  if Util.values(Db.shared.peek 'player').every(({state}) ->
+    state is PLAYER_STATE.IDLE)
     do Cah.wakeCzar
 
 # Czar

@@ -1,3 +1,5 @@
+{APP_STATE, ROUND_PHASE, PLAYER_STATE} = Enums.get()
+
 exports.initGame = ->
   Db.shared.set 'czar', null
   Db.shared.set 'round', 0
@@ -17,7 +19,7 @@ exports.initRound = ->
   czar = null
   
   Db.shared.incr 'round'
-  Db.shared.set 'phase', 0
+  Db.shared.set 'phase', ROUND_PHASE.PLAYER
   Db.shared.modify 'czar', (id) ->
     czarIndex = players.indexOf id
     czarIndex = ++czarIndex % players.length
@@ -26,16 +28,16 @@ exports.initRound = ->
   Db.shared.set 'blackCard', exports.drawCards('black')[0]
   
   players.forEach (player) ->
-    Db.shared.set 'player', player, 'state', 1
+    Db.shared.set 'player', player, 'state', PLAYER_STATE.BUSY
     Db.shared.remove 'player', player, 'selection'
   
-  Db.shared.set 'player', czar, 'state', 0
+  Db.shared.set 'player', czar, 'state', PLAYER_STATE.IDLE
 
 exports.wakeCzar = ->
   czar = Db.shared.peek 'czar'
-  Db.shared.set 'player', czar, 'state', 1
+  Db.shared.set 'player', czar, 'state', PLAYER_STATE.BUSY
   
-  Db.shared.set 'phase', 1
+  Db.shared.set 'phase', ROUND_PHASE.CZAR
   
   Event.create
     lowPrio: 'all',
@@ -76,7 +78,7 @@ exports.endRound = ->
     pushText: App.userName(winner) + ' won the round!'
   
   # Show result to players
-  Db.shared.set 'player', czar, 'state', 0
+  Db.shared.set 'player', czar, 'state', PLAYER_STATE.IDLE
   Timer.set 5e4, 'initRound'
 
 exports.endGame = ->
