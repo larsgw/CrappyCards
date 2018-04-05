@@ -3,6 +3,7 @@
 .deployignore
 .deploykey
 .directory
+.keys/
 
 # DOCS
 LICENSE

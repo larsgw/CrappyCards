@@ -8,4 +8,5 @@ packs.common.coffee
 
 # KEY
 .deploykey
+.keys/
 old_key.txt

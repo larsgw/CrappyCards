@@ -2,6 +2,10 @@
   "author": "Lars Willighagen",
   "private": true,
   "scripts": {
+    "deploy": "./deploy",
+    "deploy:dev": "npm run deploy -- dev",
+    "deploy:stage": "npm run deploy -- stage",
+    "deploy:prod": "npm run deploy -- prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
