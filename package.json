@@ -6,6 +6,7 @@
     "deploy:dev": "npm run deploy -- dev",
     "deploy:stage": "npm run deploy -- stage",
     "deploy:prod": "npm run deploy -- prod",
+    "deploy-all": "for f in .keys/*; do k=\"${f##*/}\" && npm run deploy -- $k; done",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
