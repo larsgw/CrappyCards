@@ -15,6 +15,7 @@ exports.APP_STATE = constants.APP_STATE
 exports.ROUND_PHASE = constants.ROUND_PHASE
 exports.PLAYER_STATE = constants.PLAYER_STATE
 
+# Magic trickery to escape the sandbox
 exports.get = ->
   enums = {}
   for name, values of constants

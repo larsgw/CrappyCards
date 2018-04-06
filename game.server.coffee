@@ -41,45 +41,57 @@ exports.wakeCzar = ->
   
   Event.create
     lowPrio: 'all',
-    highPrio: czar,
+    normalPrio: czar,
     text: 'Card Czar, your turn to pick the winning combination!'
 
 exports.endRound = ->
-  czar = Db.shared.peek 'czar'
-  winner = Db.shared.peek 'player', czar, 'selection'
-  Db.shared.incr 'player', winner, 'points'
+  players = Db.shared.ref 'player'
   
-  # Register data
+  czar = Db.shared.peek 'czar'
+  winner = players.peek czar, 'selection'
+  players.incr winner, 'points'
+  
   round = Db.shared.peek 'round'
   blackCard = Db.shared.peek 'blackCard'
+  draw = +Packs.cardInfo(blackCard).draw + 1
   responses = {}
-  for player, data of Db.shared.peek 'player'
-    responses[player] = {selection: data.selection}
+  
+  for player, {selection} of players.peek()
+    if +player isnt czar
+      # Register response
+      responses[player] = {selection}
+      
+      players.modify player, 'cards', (cards) ->
+        # Remove played cards
+        for card of selection
+          i = cards.indexOf +card
+          cards.splice(i, 1)
+        
+        # Draw cards
+        cards.concat(exports.drawCards 'white', draw)
+  
+  # Register round data
   roundData = {czar, winner, blackCard, responses}
   Db.shared.set 'rounds', round, roundData
-  
-  # Redraw cards
-  draw = +Packs.cardInfo(blackCard).draw + 1
-  players = Db.shared.peek 'players'
-  players.forEach (player) ->
-    if player isnt czar
-      # TODO remove played cards
-      Db.shared.modify 'player', player, 'cards', (cards) ->
-        cards.concat(exports.drawCards 'white', draw)
   
   # Send notification, add log message
   Comments.post
     # Log message
     s: 'round'
-    u: winner
+    u: czar
     winner: winner
+    
     # Notification
+    
+    # TODO this creates a permanent grey bubble for that
+    # rounds page, which is quite annoying as you then
+    # have to click 3 times to go to that page
     path: ['rounds', round]
     pushText: App.userName(winner) + ' won the round!'
   
   # Show result to players
-  Db.shared.set 'player', czar, 'state', PLAYER_STATE.IDLE
-  Timer.set 5e4, 'initRound'
+  players.set czar, 'state', PLAYER_STATE.IDLE
+  Timer.set 5e3, 'client_nextRound'
 
 exports.endGame = ->
   # TODO

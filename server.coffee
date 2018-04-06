@@ -58,11 +58,12 @@ exports.client_pickCard = (player, card) ->
 exports.client_unpickCard = (player, card) ->
   Db.shared.remove 'player', player, 'selection', card
 
-exports.client_playCards = (player) ->
+exports.client_play = (player) ->
   Db.shared.set 'player', player, 'state', PLAYER_STATE.IDLE
   
-  if Util.values(Db.shared.peek 'player').every(({state}) ->
-    state is PLAYER_STATE.IDLE)
+  if player is Db.shared.peek 'czar'
+    do Game.endRound
+  else if Util.values(Db.shared.peek 'player').every(({state}) -> state is PLAYER_STATE.IDLE)
     do Game.wakeCzar
 
 # Czar
@@ -71,12 +72,9 @@ exports.client_pickCzar = (player) ->
   czar = Db.shared.peek 'czar'
   Db.shared.set 'player', czar, 'selection', player
 
-# exports.client_unpickCzar = () ->
-#   czar = Db.shared.peek 'czar'
-#   Db.shared.remove 'player', czar, 'selection'
-
-exports.client_playCzar = () ->
-  do Game.endRound
+exports.client_unpickCzar = () ->
+  czar = Db.shared.peek 'czar'
+  Db.shared.remove 'player', czar, 'selection'
 
 # Debug
 

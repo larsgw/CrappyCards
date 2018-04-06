@@ -40,11 +40,19 @@ cardCss =
     margin: 'auto 0'
     textAlign: 'center'
   
+  '.cards .group':
+    display: 'flex'
+    background: 'grey'
+    borderRadius: '20px'
+    flex: '0'
+  
   '.cards .card':
     flex: '0 0'
     display: 'flex'
     flexDirection: 'column'
     border: '1px solid'
+  '.card.white':
+    backgroundColor: 'white'
   '.card.black':
     backgroundColor: 'black'
   '.card.selected':
@@ -211,15 +219,26 @@ r_game = ->
       renderCard 'white', ->
         userState = Db.shared.get 'player', user, 'state'
         
-        if isPlayer and userState is PLAYER_STATE.BUSY
-          if isCzar
-            if Db.shared.get('player', user, 'selection')?
-              Ui.button 'Confirm', -> Server.call 'playCzar'
-          else
+        showButton = false
+        if userState is PLAYER_STATE.BUSY
+          if isCzar and Db.shared.get('player', user, 'selection')?
+            showButton = true
+          else if isPlayer
             {pick} = Packs.cardInfo(blackCard)
             picked = Db.shared.count('player', user, 'selection').get()
-            if +picked is +pick
-              Ui.button 'Confirm', -> Server.call 'playCards', user
+            showButton = +picked is +pick
+        
+        if showButton
+          Ui.button 'Confirm', -> Server.call 'play', user
+        else if userState is PLAYER_STATE.BUSY
+          Dom.p -> Ui.emptyText 'Your turn'
+        else if isPlayer
+          Dom.p -> Ui.emptyText 'Waiting...'
+        
+        Dom.div ->
+          Dom.addClass 'footer'
+          Dom.style {textAlign: 'center', textTransform: 'uppercase'}
+          Dom.text if isCzar then 'Czar' else if isPlayer then 'Player' else 'Spectator'
     
     Dom.div -> Dom.addClass 'sep'
     
@@ -256,32 +275,32 @@ r_game = ->
           player = +playerData.key()
           
           if player isnt czar
-            # TODO
-#             Dom.div ->
-#               Dom.addClass 'group'
-            czarState = Db.shared.get 'player', czar, 'state'
-            
-            cardType = 'white'
-            onTap = null
-            
-            if isCzar or czarState is PLAYER_STATE.IDLE
-              selected = player is Db.shared.get 'player', czar, 'selection'
-              cardType = if selected then 'selected' else 'white'
-#               action = if selected then 'unpickCzar' else 'pickCzar'
-#               onTap = -> Server.call action, player
-              onTap = -> Server.call 'pickCzar', player
-            
-            playerData.iterate 'selection', (ordinal) ->
-              card = ordinal.key()
-              renderCard cardType, renderCardContents(card, ordinal.get()), onTap
-            , (ordinal) -> +ordinal.get()
+            Dom.div ->
+              Dom.addClass 'group'
+              czarState = Db.shared.get 'player', czar, 'state'
+              
+              cardType = 'white'
+              onTap = null
+              
+              if isCzar or czarState is PLAYER_STATE.IDLE
+                selected = player is Db.shared.get 'player', czar, 'selection'
+                cardType = if selected then 'selected' else 'white'
+                action = if selected then 'unpickCzar' else 'pickCzar'
+                onTap = -> Server.call action, player
+              
+              playerData.iterate 'selection', (ordinal) ->
+                card = ordinal.key()
+                renderCard cardType, renderCardContents(card, ordinal.get()), onTap
+              , (ordinal) -> +ordinal.get()
     
     Dom.div -> Dom.addClass 'sep'
     
+    # Admin tools:
+    #   * Skip (to Czar or to next round)
+    #   * Next round
     # Info:
+    #   * About (Git README)
     #   * License (cards, mainly)
-    #   * Next round (for debugging)
-    #   * Privacy (data might be collected in the feature)
 
     Dom.div ->
       Dom.addClass 'print'
@@ -336,27 +355,26 @@ r_round = (query) ->
   
   roundData.iterate 'responses', (response) ->
     player = +response.key()
-    selection = response.ref 'selection'
     
-    if player isnt czar
-      Ui.item
-        avatar: App.userAvatar player
-        content: ->
-          selection.iterate (card) ->
-            {text} = Packs.cardInfo card.key()
-            Dom.p -> Dom.userText '"' + text + '"'
-          , (card) -> +card.peek()
-        sub: ->
-          Dom.span App.userName(player) + ' (winner)'
-          Dom.span ->
-            Dom.style {float: 'right'}
-            
-            Comments.renderLike
-              store: ['rounds', query, 'responses', player, 'likes']
-              userId: player
-              size: 16
-              aboutWhat: "cards"
-              noExpand: true
+    Ui.item
+      avatar: App.userAvatar player
+      content: ->
+        response.iterate 'selection', (card) ->
+          {text} = Packs.cardInfo card.key()
+          Dom.p -> Dom.userText '"' + text + '"'
+        , (card) -> +card.peek()
+      sub: ->
+        Dom.span App.userName(player) + ' (winner)'
+        Dom.span ->
+          Dom.style {float: 'right'}
+          
+          Comments.renderLike
+            store: ['rounds', query, 'responses', player, 'likes']
+            userId: player
+            size: 16
+            aboutWhat: "cards"
+            noExpand: true
+  , (player) -> if +player is winner then -1 else 0
 
 r_rounds = ->
   Page.setTitle 'Round history'
