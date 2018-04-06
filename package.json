@@ -1,6 +1,7 @@
 {
   "author": "Lars Willighagen",
   "private": true,
+  "version": "0.1.0",
   "scripts": {
     "deploy": "./deploy",
     "deploy:dev": "npm run deploy -- dev",
