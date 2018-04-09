@@ -16,6 +16,10 @@ exports.initGame = ->
     Db.shared.set 'player', player, 'points', 0
     Db.shared.set 'player', player, 'cards', exports.drawCards('white', 10)
   
+  Event.create
+    normalPrio: 'all',
+    text: 'The game is starting!'
+  
   # Start first round
   do exports.initRound
 
