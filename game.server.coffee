@@ -1,17 +1,22 @@
 {APP_STATE, ROUND_PHASE, PLAYER_STATE} = Enums.get()
 
 exports.initGame = ->
+  # Init vars
   Db.shared.set 'czar', null
   Db.shared.set 'round', 0
+  Db.shared.set 'rounds', {}
   
+  # Get cards
   Db.shared.set 'cards', 'black', Object Packs.getBlackCards(Db.shared.peek 'packs')
   Db.shared.set 'cards', 'white', Object Packs.getWhiteCards(Db.shared.peek 'packs')
   
+  # Player: init vars and get cards
   players = Db.shared.peek 'players'
   players.forEach (player) ->
     Db.shared.set 'player', player, 'points', 0
     Db.shared.set 'player', player, 'cards', exports.drawCards('white', 10)
   
+  # Start first round
   do exports.initRound
 
 exports.initRound = ->
