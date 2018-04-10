@@ -364,7 +364,8 @@ r_round = (query) ->
           Dom.p -> Dom.userText '"' + text + '"'
         , (card) -> +card.peek()
       sub: ->
-        Dom.span App.userName(player) + ' (winner)'
+        Dom.span App.userName(player) + if player is winner then ' (winner)' else ''
+        
         Dom.span ->
           Dom.style {float: 'right'}
           
@@ -374,7 +375,7 @@ r_round = (query) ->
             size: 16
             aboutWhat: "cards"
             noExpand: true
-  , (player) -> if +player is winner then -1 else 0
+  , (player) -> if +player.key() is winner then -1 else 0
 
 r_rounds = ->
   Page.setTitle 'Round history'
