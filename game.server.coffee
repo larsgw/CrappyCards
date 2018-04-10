@@ -41,6 +41,10 @@ exports.initRound = ->
     Db.shared.remove 'player', player, 'selection'
   
   Db.shared.set 'player', czar, 'state', PLAYER_STATE.IDLE
+  Event.create
+    highPrio: players,
+    sender: czar,
+    text: 'Player, your turn to pick cards!'
 
 exports.wakeCzar = ->
   czar = Db.shared.peek 'czar'
@@ -50,7 +54,7 @@ exports.wakeCzar = ->
   
   Event.create
     lowPrio: 'all',
-    normalPrio: czar,
+    highPrio: czar,
     text: 'Card Czar, your turn to pick the winning combination!'
 
 exports.endRound = ->
@@ -89,14 +93,6 @@ exports.endRound = ->
     s: 'round'
     u: czar
     winner: winner
-    
-    # Notification
-    
-    # TODO this creates a permanent grey bubble for that
-    # rounds page, which is quite annoying as you then
-    # have to click 3 times to go to that page
-    path: ['rounds', round]
-    pushText: App.userName(winner) + ' won the round!'
   
   # Show result to players
   players.set czar, 'state', PLAYER_STATE.IDLE
