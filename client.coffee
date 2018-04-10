@@ -1,6 +1,12 @@
 {APP_STATE, ROUND_PHASE, PLAYER_STATE} = Enums
 
-cardCss =
+cardCss = (height) ->
+  # Responsive styling
+  cardHeight = (height - 69) / 2
+  cardWidth = cardHeight * (5 / 7)
+  cardPadding = cardWidth * 0.1
+  cardFontSize = cardHeight * 0.075
+  
   '*':
     boxSizing: 'border-box'
   
@@ -42,15 +48,21 @@ cardCss =
   
   '.cards .group':
     display: 'flex'
-    background: 'grey'
-    borderRadius: '20px'
     flex: '0'
+    padding: '10px'
+    borderRadius: '20px'
+    border: '2px solid'
+  '.hand.cards > div, .hand.cards .group .card:not(:last-child)':
+    marginRight: "#{cardPadding}px"
   
   '.cards .card':
-    flex: '0 0'
     display: 'flex'
     flexDirection: 'column'
+    width: "#{cardWidth}px"
+    padding: "#{cardPadding}px"
+    fontSize: "#{cardFontSize}px"
     border: '1px solid'
+    borderRadius: "#{cardPadding * 0.5}px"
   '.card.white':
     backgroundColor: 'white'
   '.card.black':
@@ -71,6 +83,8 @@ cardCss =
   '.card .footer':
     borderTop: '1px solid'
     fontSize: '0.5em'
+    paddingTop: "#{cardPadding * 0.5}px"
+    marginTop: "#{cardPadding * 0.5}px"
   
   '.card .watermark':
     float: 'left'
@@ -137,22 +151,6 @@ r_game = ->
     action: -> Page.nav ['players']
   ]
   
-  # Responsive styling
-  cardHeight = (Page.height() - 69) / 2
-  cardWidth = cardHeight * (5 / 7)
-  cardPadding = cardWidth * 0.1
-  cardFontSize = cardHeight * 0.075
-  
-  cardCss['.cards .card'].flexBasis = "#{cardWidth}px"
-  cardCss['.cards .card'].fontSize = "#{cardFontSize}px"
-  cardCss['.cards .card'].padding = "#{cardPadding}px"
-  cardCss['.cards .card'].borderRadius = "#{cardPadding * 0.5}px"
-  
-  cardCss['.card .footer'].paddingTop = "#{cardPadding * 0.5}px"
-  cardCss['.card .footer'].marginTop= "#{cardPadding * 0.5}px"
-  
-  (cardCss['.hand.cards .card'] = {}).marginRight = "#{cardPadding}px"
-  
   # Rendering helpers
   renderNumber = (number) ->
     Dom.span ->
@@ -195,7 +193,7 @@ r_game = ->
   
   # Rendering logic
   Dom.div ->
-    Dom.css cardCss
+    Dom.css cardCss(Page.height())
     Dom.addClass 'table'
     
     players = Db.shared.get 'players'
