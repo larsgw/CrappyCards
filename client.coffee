@@ -425,8 +425,6 @@ r_players = ->
       content: ->
         Dom.style {fontWeight}
         Dom.text App.userName(id)
-    
-  , (player) -> -player.get 'points'
   
   Dom.div -> Dom.style height: '20px'
   
