@@ -54,8 +54,11 @@ exports.game = () ->
     border: '2px solid'
   '.hand.cards > div, .hand.cards .group .card:not(:last-child)':
     marginRight: "#{cardPadding}px"
+  '.group .card:first-child:last-child':
+    margin: "#{-(cardPadding * 0.25) - 2}px"
   
   '.cards .card':
+    flexShrink: 0
     display: 'flex'
     flexDirection: 'column'
     width: "#{cardWidth}px"
