@@ -153,10 +153,13 @@ r_game = ->
           cards.forEach (card) ->
             ordinal = Db.shared.get 'player', user, 'selection', card
             cardType = if ordinal? then 'selected' else 'white'
-            action = if ordinal? then 'unpickCard' else 'pickCard'
+            onTap = null
             
-            renderCard(cardType, renderCardContents(card, ordinal), ->
-              Server.call(action, user, card))
+            if Db.shared.get('player', user, 'state') is PLAYER_STATE.BUSY
+              action = if ordinal? then 'unpickCard' else 'pickCard'
+              onTap = -> Server.call action, user, card
+            
+            renderCard cardType, renderCardContents(card, ordinal), onTap
         else
           Ui.emptyText 'Waiting for players to play cards...'
       
@@ -176,6 +179,7 @@ r_game = ->
               if isCzar or czarState is PLAYER_STATE.IDLE
                 selected = player is Db.shared.get 'player', czar, 'selection'
                 cardType = if selected then 'selected' else 'white'
+              if isCzar and czarState is PLAYER_STATE.BUSY
                 action = if selected then 'unpickCzar' else 'pickCzar'
                 onTap = -> Server.call action, player
               
