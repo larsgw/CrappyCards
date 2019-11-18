@@ -11,9 +11,10 @@ There is currently no production developer console instance for Crappy Cards. Fo
 > On Linux/Mac, use your Bash-compatible shell. On Windows, we recommend the Git shell that comes with [Git](http://git-scm.com/download/win).
 > 
 > 1. Clone the code: `git clone https://github.com/larsgw/CrappyCards.git; cd CrappyCards`.
-> 2. Create a **Developer console app** via https://happening.im/store/106 and clicking "Start!".
-> 3. Create a directory with a __deploy key__ file: `mkdir .keys/; echo {deployKey} > .keys/foo`.
-> 4. Deploy your app using `./deploy foo` or `npm run deploy -- foo`. It should instantly update in your browser / app.
+> 2. Run `node updateCards.js` to load card data
+> 3. Create a **Developer console app** via https://happening.im/store/106 and clicking "Start!".
+> 4. Create a directory with a __deploy key__ file: `mkdir .keys/; echo {deployKey} > .keys/foo`.
+> 5. Deploy your app using `./deploy foo` or `npm run deploy -- foo`. It should instantly update in your browser / app.
 
 ## Contribute
 
