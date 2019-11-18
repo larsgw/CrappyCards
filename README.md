@@ -1,4 +1,4 @@
-# ![Crappy Cards logo](https://cdn.rawgit.com/larsgw/CrappyCards/master/icon.svg) Crappy Cards
+# ![Crappy Cards logo](./icon.svg) Crappy Cards
 
 A [Happening](https://happening.im) plugin based on [Cards Against Humanity](https://cardsagainsthumanity.com/) (see [LICENSE](https://github.com/larsgw/CrappyCards/blob/master/LICENSE.md)).
 
